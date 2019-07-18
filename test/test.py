@@ -1,6 +1,6 @@
 import unittest
 import pexif
-import StringIO
+import io
 import difflib
 
 test_data = [
@@ -54,7 +54,7 @@ class TestLoadFunctions(unittest.TestCase):
         for test_file, expected_file in test_data:
             expected = open(expected_file, 'rb').read()
             jpeg = pexif.JpegFile.fromFile(test_file)
-            out = StringIO.StringIO()
+            out = io.StringIO()
             jpeg.dump(out)
             res = "Error in file <%s>\n" % test_file
             x = difflib.unified_diff(expected.split('\n'), out.getvalue().split('\n'))

@@ -52,14 +52,14 @@ def main():
             jf = JpegFile.fromFile(fname)
         except (IOError, JpegFile.InvalidFile):
             type, value, traceback = sys.exc_info()
-            print >> sys.stderr, "Error reading %s:" % fname, value
+            print("Error reading %s:" % fname, value, file=sys.stderr)
             return 1
 
         exif = jf.get_exif()
         if exif:
             primary = exif.get_primary()
         if exif is None or primary is None:
-            print >> sys.stderr, "%s has no EXIF tag, skipping" % fname
+            print("%s has no EXIF tag, skipping" % fname, file=sys.stderr)
             continue
 
         adjust_time(primary, delta)
@@ -68,7 +68,7 @@ def main():
             jf.writeFile(fname)
         except IOError:
             type, value, traceback = sys.exc_info()
-            print >> sys.stderr, "Error saving %s:" % fname, value
+            print("Error saving %s:" % fname, value, file=sys.stderr)
             return 1
 
     return 0
