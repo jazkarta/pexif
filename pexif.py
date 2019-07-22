@@ -235,6 +235,7 @@ class ExifType:
         self.size = size
         ExifType.lookup[type_id] = self
 
+
 BYTE = ExifType(1, "byte", 1).id
 ASCII = ExifType(2, "ascii", 1).id
 SHORT = ExifType(3, "short", 2).id
@@ -264,7 +265,7 @@ class Rational:
 
     def as_tuple(self):
         """Return the fraction a numerator, denominator tuple."""
-        return (self.num, self.den)
+        return self.num, self.den
 
 
 class IfdData(object):
@@ -323,7 +324,7 @@ class IfdData(object):
             if entry[1] == name:
                 x = self[key]
                 if x is None:
-                    raise AttributeError
+                    raise AttributeError()
                 return x
         for key, entry in list(self.embedded_tags.items()):
             if entry[0] == name:
@@ -335,7 +336,7 @@ class IfdData(object):
                         self[key] = new
                         return new
                     else:
-                        raise AttributeError
+                        raise AttributeError()
         raise AttributeError("%s not found.. %s" % (name, self.embedded_tags))
 
     def __getitem__(self, key):
@@ -398,9 +399,8 @@ class IfdData(object):
             return
 
         num_entries = unpack(e + 'H', data[offset:offset+2])[0]
-        next = unpack(e + "I", data[offset+2+12*num_entries:
-                                    offset+2+12*num_entries+4])[0]
-        debug("OFFSET %s - %s" % (offset, next))
+        next_ = unpack(e + "I", data[offset+2+12*num_entries: offset+2+12*num_entries+4])[0]
+        debug("OFFSET %s - %s" % (offset, next_))
 
         for i in range(num_entries):
             start = (i * 12) + 2 + offset
@@ -453,9 +453,9 @@ class IfdData(object):
                                                             the_data[i*8:
                                                                      i*8+8])))
                 else:
-                    raise "Can't handle this"
+                    raise Exception("Can't handle this")
 
-                if (byte_size > 4):
+                if byte_size > 4:
                     debug("%s" % actual_data)
 
                 self.special_handler(tag, actual_data)
@@ -484,7 +484,7 @@ class IfdData(object):
 
         for tag, exif_type, the_data in self.entries:
             magic_type = exif_type
-            if (self.isifd(the_data)):
+            if self.isifd(the_data):
                 debug("-> Magic..")
                 sub_data, next_offset = the_data.getdata(e, data_offset, 1)
                 the_data = [data_offset]
@@ -521,8 +521,8 @@ class IfdData(object):
                 for i in range(components):
                     actual_data += pack(e + t, *the_data[i].as_tuple())
             else:
-                raise "Can't handle this", exif_type
-            if (byte_size) > 4:
+                raise Exception("Can't handle this", exif_type)
+            if byte_size > 4:
                 output_data += actual_data
                 actual_data = pack(e + "I", data_offset)
                 data_offset += byte_size
