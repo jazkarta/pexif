@@ -92,6 +92,7 @@ except AttributeError:
  print "No Focal Length data"
 
 """
+from __future__ import print_function
 
 import io
 import sys

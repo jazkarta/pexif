@@ -7,6 +7,7 @@ Requires Benno's pexif library: http://code.google.com/p/pexif/
 
 -- Andrew Baumann <andrewb@inf.ethz.ch>, 20080716
 """
+from __future__ import print_function
 
 import sys
 from pexif import JpegFile, EXIF_OFFSET
